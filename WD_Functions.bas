@@ -10,12 +10,9 @@ Public Function File_Exists(ByVal sPathName As String, Optional Directory As Boo
  
  On Error Resume Next
  If sPathName <> "" Then
-
     If IsMissing(Directory) Or Directory = False Then
-
         File_Exists = (Dir$(sPathName) <> "")
     Else
-
         File_Exists = (Dir$(sPathName, vbDirectory) <> "")
     End If
 
