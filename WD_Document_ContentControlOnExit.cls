@@ -14,7 +14,8 @@ Private Sub Document_ContentControlOnExit(ByVal ContentControl As ContentControl
     Dim ccEmail As ContentControl
     
     With ActiveDocument
-        
+        ' This event will populate the embedded ContentColtrols with the tag "Consultant" and build
+        ' a list of options. In VBA this event fires each time a user exits any ContentControl.
     
         Select Case ContentControl.Tag
             Case "Consultant"
