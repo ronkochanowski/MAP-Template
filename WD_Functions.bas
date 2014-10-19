@@ -1,13 +1,15 @@
 Attribute VB_Name = "Functions"
 Option Explicit
 
+'-----------------------------------------------------------------
 Public Function File_Exists(ByVal sPathName As String, Optional Directory As Boolean) As Boolean
  
  'Read more at http://vbadud.blogspot.com/2007/04/vba-function-to-check-file-existence.html#y3dfrq8lAIHeTSGA.99
  
  'Returns True if the passed sPathName exist
  'Otherwise returns False
- 
+'-----------------------------------------------------------------
+
  On Error Resume Next
  If sPathName <> "" Then
     If IsMissing(Directory) Or Directory = False Then
@@ -19,7 +21,9 @@ Public Function File_Exists(ByVal sPathName As String, Optional Directory As Boo
  End If
 End Function
 
+'-----------------------------------------------------------------
 Public Function IsAppRunning(ByVal sAppName) As Boolean
+'-----------------------------------------------------------------
     
 'checks to see if the application passed is running.  the application is in the format
 ' AppName.Application, as in, "Excel.Application"
@@ -34,7 +38,9 @@ Public Function IsAppRunning(ByVal sAppName) As Boolean
 
 End Function
 
+'-----------------------------------------------------------------
 Public Function xlIsDirty(ByVal ws As Excel.Worksheet) As Boolean
+'-----------------------------------------------------------------
     
     'checks to see if the worksheet is dirty by looking at the range "A2:B3000"
     If ws.Application.WorksheetFunction.CountA(Range("A2:B3000")) = 0 Then
@@ -42,4 +48,17 @@ Public Function xlIsDirty(ByVal ws As Excel.Worksheet) As Boolean
     Else
         xlIsDirty = True
     End If
+End Function
+
+'-----------------------------------------------------------------
+Public Function SiteAbbr() As String
+  ' copies content control values and returns a string to the calling procedure
+'-----------------------------------------------------------------
+    Dim sSite As String
+    Dim sABBR As String
+    
+    sSite = ActiveDocument.SelectContentControlsByTag("Site").Item(1).Range.Text
+    sABBR = ActiveDocument.SelectContentControlsByTag("ABBR").Item(1).Range.Text
+    
+    SiteAbbr = sSite & " " & sABBR & " " & "MAP Timeline"
 End Function
