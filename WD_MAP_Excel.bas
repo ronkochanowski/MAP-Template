@@ -32,11 +32,11 @@ End Sub
 
 ' check if Excel file exists with same name
 Sub CheckForExcelFile()
-    Dim strpath As String
+    Dim sPath As String
     
-    strpath = Left(ActiveDocument.FullName, Len(ActiveDocument.FullName) - 5) & ".xlsm"
+    sPath = Left(ActiveDocument.FullName, Len(ActiveDocument.FullName) - 5) & ".xlsx"
     
-    If File_Exists(strpath) Then
+    If File_Exists(sPath) Then
         ' call procedure to get the existing file and open it
         Call OpenExistingTimeline
     
@@ -100,7 +100,7 @@ Sub CreateNewTimeline()
     
 End Sub
 
-' find headings 1, 2, 3 inside of Action Areas and build array
+' find headings 2, 3 inside of Action Areas and build array
 Sub CopyHeadingsToArray()
     Dim i As Long, a As Long, b As Long
     Dim myRange As Word.Range
@@ -118,9 +118,12 @@ Sub CopyHeadingsToArray()
     For Each myPar In myRange.Paragraphs
         If Left(myPar.Range.Text, 8) <> "Timeline" Then
             Select Case myPar.Style
-                Case "Heading 1", "Heading 2", "Heading 3"
+                Case "Heading 2"
                     ReDim Preserve gHeadings(2, i)
-                    gHeadings(1, i) = Right(myPar.Style, 1)
+                    gHeadings(1, i) = Trim(myPar.Range.Text)
+                    i = i + 1
+                Case "Heading 3"
+                    ReDim Preserve gHeadings(2, i)
                     gHeadings(2, i) = Trim(myPar.Range.Text)
                     i = i + 1
                 Case Else
@@ -134,6 +137,7 @@ Sub CopyHeadingsToArray()
         .StatusBar = ""
     End With
 End Sub
+
 
 Sub OpenExistingTimeline()
     Dim xlApp As Excel.Application
