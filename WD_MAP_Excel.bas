@@ -149,7 +149,7 @@ Sub OpenExistingTimeline()
     Dim sApp As String
     
     ' set the variable pointing to the file being looked for...
-    sFullPath = Left(ActiveDocument.FullName, Len(ActiveDocument.FullName) - 5) & ".xlsm"
+    sFullPath = Left(ActiveDocument.FullName, Len(ActiveDocument.FullName) - 5) & ".xlsx"
     sApp = "Excel.Application"
     
     ' check to see if Excel is running, if not, start it
@@ -164,7 +164,8 @@ Sub OpenExistingTimeline()
     Set xlWB = xlApp.Workbooks.Open(FileName:=sFullPath)
         
     'check if data exists on worksheet
-    Set xlWS = xlWB.Sheets("ProjectTimeline")
+    Set xlWS = xlWB.Sheets("Project Timeline")
+    Set xlLO = xlWS.ListObjects("Table2")
     If xlIsDirty(xlWS) Then
     
         ' confirm that the data is to be cleared, if the answer is yes then clear and replace
@@ -172,17 +173,15 @@ Sub OpenExistingTimeline()
          & "Do you want to overwrite what was previously entered?", vbYesNo, "Confirm Overwriting Data") _
          = vbYes Then
          
-            ' clear the range to prepare it for new data
-            With xlWS
-                .Range("A1:B1").Clear
-                .Range("A2:A3000").EntireRow.Delete
-            End With
-            
             ' after clearing the data, this would be the next statement. Recreate the array in Word
             Call CopyHeadingsToArray
+            
+            ' call funcetion to paste site number and abbreviation in excel header
+            xlWS.Range("B1").Value = SiteAbbr
+        
         
             ' paste headings from array into excel
-            xlWS.Range("A1:B" & UBound(gHeadings, 2)) = xlApp.transpose(gHeadings)
+            xlWS.Range("B5:C" & UBound(gHeadings, 2)) = xlApp.Transpose(gHeadings)
             
             ' show Excel
             xlApp.Visible = True
@@ -200,8 +199,11 @@ Sub OpenExistingTimeline()
         ' after clearing the data, this would be the next statement. Recreate the array in Word
         Call CopyHeadingsToArray
     
+        ' call funcetion to paste site number and abbreviation in excel header
+        xlWS.Range("B1").Value = SiteAbbr
+        
         ' paste headings from array into excel
-        xlWS.Range("A1:B" & UBound(gHeadings, 2)) = xlApp.transpose(gHeadings)
+        xlWS.Range("B5:C" & UBound(gHeadings, 2)) = xlApp.Transpose(gHeadings)
         
         ' show Excel
         xlApp.Visible = True
