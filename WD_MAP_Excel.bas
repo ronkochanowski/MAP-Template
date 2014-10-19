@@ -53,35 +53,47 @@ Sub CreateNewTimeline()
     Dim xlApp As Excel.Application
     Dim xlWB As Excel.Workbook
     Dim xlWS As Excel.Worksheet
+    Dim xlLO As Excel.ListObject
     Dim sTemplate As String
     Dim sFullPath As String
+    Dim xlRng As Excel.Range
     
-    sTemplate = Options.DefaultFilePath(wdUserTemplatesPath) & "\MAP Template.xltm"
+    ' if develop mode then point to the develop mode excel template
+    If gDevMode Then
+        sTemplate = Options.DefaultFilePath(wdUserTemplatesPath) & "\Dev\MAP Template.xltx"
+    Else
+        sTemplate = Options.DefaultFilePath(wdUserTemplatesPath) & "\MAP Template.xltx"
+    End If
     
     ' prepare Excel objects to write to
     Set xlApp = New Excel.Application
     Set xlWB = xlApp.Workbooks.Open(sTemplate)
-    Set xlWS = xlWB.Sheets("ProjectTimeline")
+    Set xlWS = xlWB.Sheets("Project Timeline")
+    Set xlLO = xlWS.ListObjects("Table2")
     
     ' set path to save Excel file same as for Word file
     sFullPath = Left(ActiveDocument.FullName, Len(ActiveDocument.FullName) - 5)
     
     ' save Excel file
-    xlWB.SaveAs FileName:=sFullPath, FileFormat:=xlOpenXMLWorkbookMacroEnabled
+    xlWB.SaveAs FileName:=sFullPath, FileFormat:=xlOpenXMLWorkbook
     
     ' after saving the Project Timeline, create the array in Word
     Call CopyHeadingsToArray
+    
+    ' call funcetion to paste site number and abbreviation in excel header
+    xlWS.Range("B1").Value = SiteAbbr
 
     ' paste headings from array into excel
-    xlWS.Range("A1:B" & UBound(gHeadings, 2)) = xlApp.transpose(gHeadings)
+    xlWS.Range("B5:C" & UBound(gHeadings, 2)) = xlApp.Transpose(gHeadings)
     
     MsgBox "The Timeline header information has been successfully " & vbNewLine & _
-      "transferred to the Excel file" & vbNewLine & sFullPath & ".xlsm", vbInformation
+      "transferred to the Excel file" & vbNewLine & sFullPath & ".xlsx", vbInformation
     
     ' show Excel
     xlApp.Visible = True
     
     'Tidy up
+    Set xlLO = Nothing
     Set xlWS = Nothing
     Set xlWB = Nothing
     Set xlApp = Nothing
